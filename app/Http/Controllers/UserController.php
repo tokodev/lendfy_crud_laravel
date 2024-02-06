@@ -3,29 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function index()
     {
-        $users = User::all();
+        $users = $this->userRepository->all();
 
         return response()->json($users);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -35,7 +32,7 @@ class UserController extends Controller
             // Include other validation rules for additional fields
         ]);
 
-        $user = User::create([
+        $user = $this->userRepository->create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
@@ -45,24 +42,11 @@ class UserController extends Controller
         return response()->json($user, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
     public function show(User $user)
     {
         return response()->json($user);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, User $user)
     {
         $request->validate([
@@ -72,7 +56,7 @@ class UserController extends Controller
             // Include other validation rules for additional fields
         ]);
 
-        $user->update([
+        $user = $this->userRepository->update($user->id, [
             'name' => $request->input('name', $user->name),
             'email' => $request->input('email', $user->email),
             'password' => $request->input('password')
@@ -84,15 +68,9 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(User $user)
     {
-        $user->delete();
+        $this->userRepository->delete($user->id);
 
         return response()->json(null, 204);
     }
