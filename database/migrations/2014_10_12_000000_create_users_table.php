@@ -17,6 +17,15 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('cpf')->unique();
+            $table->date('birth_date');
+            $table->string('street');
+            $table->string('street_number');
+            $table->string('cep');
+            $table->string('city');
+            $table->string('state');
+            $table->string('uf', 2);
+            $table->boolean('active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

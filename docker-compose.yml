@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  web:
+    image: php:8.3-apache
+    container_name: lendfy-web
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - lendfy-net
+    depends_on:
+      - db
+    command: ["bash", "-c", "sleep 10 && apache2-foreground"]
+
+  db:
+    image: mysql:latest
+    container_name: lendfy-db
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    networks:
+      - lendfy-net
+    volumes:
+      - db-data:/var/lib/mysql
+
+networks:
+  lendfy-net:
+    driver: bridge
+
+volumes:
+  db-data:
