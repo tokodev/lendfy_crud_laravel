@@ -20,9 +20,15 @@ class UserRepository
      * @param array $columns
      * @return Collection
      */
-    public function all(array $columns = ['*']): Collection
+
+     public function all(array $columns = ['*']): Collection
     {
         return $this->model->all($columns);
+    }
+
+    public function latestPaginated($perPage = 5)
+    {
+        return $this->model->latest()->paginate($perPage);
     }
 
     public function find(int $id): ?User

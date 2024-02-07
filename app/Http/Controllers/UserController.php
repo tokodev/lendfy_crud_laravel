@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
@@ -16,18 +19,25 @@ class UserController extends Controller
         $this->userRepository = $userRepository;
     }
 
-   public function index()
+   public function index(): View
+    {
+        $users = $this->userRepository->latestPaginated(5);
+
+        return view('users.index', compact('users'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(): View
+    {
+        return view('users.create');
+    }
+
+
+    public function store(Request $request): RedirectResponse
 {
-    $users = $this->userRepository->all();
-
-    return response()->json($users);
-}
-
-
-    public function store(Request $request)
-{
-    dd($request);
-
     $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users|max:255',
@@ -38,9 +48,7 @@ class UserController extends Controller
         'street_number' => 'required|string',
         'cep' => 'required|string',
         'city' => 'required|string',
-        'state' => 'required|string',
         'uf' => 'required|string|max:2',
-        'active' => 'required|boolean',
     ]);
 
     $user = $this->userRepository->create([
@@ -53,45 +61,64 @@ class UserController extends Controller
         'street_number' => $request->input('street_number'),
         'cep' => $request->input('cep'),
         'city' => $request->input('city'),
-        'state' => $request->input('state'),
         'uf' => $request->input('uf'),
-        'active' => $request->input('active'),
+        'active' => $request->filled('active') ? $request->input('active') : false,
     ]);
 
-    return response()->json($user, 201);
+      return redirect()->route('users.index')
+                        ->with('success','User created successfully.');
 }
 
-
-    public function show(User $user)
+public function edit(User $user): View
     {
-        return response()->json($user);
+        return view('users.edit',compact('user'));
+    }
+
+
+    public function show(User $user): View
+    {
+        return view('users.show',compact('user'));
     }
 
     public function update(Request $request, User $user)
-    {
-        $request->validate([
-            'name' => 'string|max:255',
-            'email' => 'email|unique:users|max:255',
-            'password' => 'string|min:8',
-            // Include other validation rules for additional fields
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|string|min:8',
+        'cpf' => 'required|string|unique:users,cpf,' . $user->id,
+        'birth_date' => 'required|date',
+        'street' => 'required|string',
+        'street_number' => 'required|string',
+        'cep' => 'required|string',
+        'city' => 'required|string',
+        'uf' => 'required|string|max:2',
+    ]);
 
-        $user = $this->userRepository->update($user->id, [
-            'name' => $request->input('name', $user->name),
-            'email' => $request->input('email', $user->email),
-            'password' => $request->input('password')
-                ? Hash::make($request->input('password'))
-                : $user->password,
-            // Include other fields
-        ]);
+    $user = $this->userRepository->update($user, [
+        'name' => $request->input('name'),
+        'email' => $request->input('email'),
+        'password' => $request->has('password') ? Hash::make($request->input('password')) : $user->password,
+        'cpf' => $request->input('cpf'),
+        'birth_date' => $request->input('birth_date'),
+        'street' => $request->input('street'),
+        'street_number' => $request->input('street_number'),
+        'cep' => $request->input('cep'),
+        'city' => $request->input('city'),
+        'uf' => $request->input('uf'),
+        'active' => $request->filled('active') ? $request->input('active') : false,
+    ]);
 
-        return response()->json($user);
+    return redirect()->route('users.index')
+                        ->with('success','User updated successfully');
     }
+
 
     public function destroy(User $user)
     {
-        $this->userRepository->delete($user->id);
+        $this->userRepository->delete($user);
 
-        return response()->json(null, 204);
+        return redirect()->route('users.index')
+                        ->with('success','User deleted successfully');
     }
 }

@@ -27,7 +27,6 @@ class User extends Authenticatable
         'street_number',
         'cep',
         'city',
-        'state',
         'uf',
         'active',
     ];

@@ -45,7 +45,6 @@ class UserController extends Controller
         'street_number' => 'required|string',
         'cep' => 'required|string',
         'city' => 'required|string',
-        'state' => 'required|string',
         'uf' => 'required|string|max:2',
         'active' => 'required|boolean',
     ]);
@@ -60,7 +59,6 @@ class UserController extends Controller
         'street_number' => $request->input('street_number'),
         'cep' => $request->input('cep'),
         'city' => $request->input('city'),
-        'state' => $request->input('state'),
         'uf' => $request->input('uf'),
         'active' => $request->input('active'),
     ]);
@@ -105,7 +103,6 @@ class UserController extends Controller
             'street_number' => 'required|string',
             'cep' => 'required|string',
             'city' => 'required|string',
-            'state' => 'required|string',
             'uf' => 'required|string|max:2',
             'active' => 'required|boolean',
         ]);
@@ -120,7 +117,6 @@ class UserController extends Controller
             'street_number' => $request->input('street_number'),
             'cep' => $request->input('cep'),
             'city' => $request->input('city'),
-            'state' => $request->input('state'),
             'uf' => $request->input('uf'),
             'active' => $request->input('active'),
         ];
