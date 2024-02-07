@@ -16,31 +16,51 @@ class UserController extends Controller
         $this->userRepository = $userRepository;
     }
 
-    public function index()
-    {
-        $users = $this->userRepository->all();
+   public function index()
+{
+    $users = $this->userRepository->all();
 
-        return response()->json($users);
-    }
+    return response()->json($users);
+}
+
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users|max:255',
-            'password' => 'required|string|min:8',
-            // Include other validation rules for additional fields
-        ]);
+{
+    dd($request);
 
-        $user = $this->userRepository->create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-            // Include other fields
-        ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users|max:255',
+        'password' => 'required|string|min:8',
+        'cpf' => 'required|string|unique:users',
+        'birth_date' => 'required|date',
+        'street' => 'required|string',
+        'street_number' => 'required|string',
+        'cep' => 'required|string',
+        'city' => 'required|string',
+        'state' => 'required|string',
+        'uf' => 'required|string|max:2',
+        'active' => 'required|boolean',
+    ]);
 
-        return response()->json($user, 201);
-    }
+    $user = $this->userRepository->create([
+        'name' => $request->input('name'),
+        'email' => $request->input('email'),
+        'password' => Hash::make($request->input('password')),
+        'cpf' => $request->input('cpf'),
+        'birth_date' => $request->input('birth_date'),
+        'street' => $request->input('street'),
+        'street_number' => $request->input('street_number'),
+        'cep' => $request->input('cep'),
+        'city' => $request->input('city'),
+        'state' => $request->input('state'),
+        'uf' => $request->input('uf'),
+        'active' => $request->input('active'),
+    ]);
+
+    return response()->json($user, 201);
+}
+
 
     public function show(User $user)
     {

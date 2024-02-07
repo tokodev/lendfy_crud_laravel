@@ -14,9 +14,15 @@ class UserRepository
         $this->model = $model;
     }
 
-    public function all(): Collection
+    /**
+     * Get all users.
+     *
+     * @param array $columns
+     * @return Collection
+     */
+    public function all(array $columns = ['*']): Collection
     {
-        return $this->model->all();
+        return $this->model->all($columns);
     }
 
     public function find(int $id): ?User

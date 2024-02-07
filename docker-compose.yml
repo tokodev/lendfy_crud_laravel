@@ -1,40 +1,106 @@
-version: "3"
-
-services:
-    web:
-        image: php:8.3-apache
-        container_name: lendfy-web
-        ports:
-            - "8080:80"
-        volumes:
-            - .:/var/www/html
-        networks:
-            - lendfy-net
-        depends_on:
-            - db
-        command: ["bash", "-c", "sleep 10 && apache2-foreground"]
-        environment:
-            - PHP_DATE_TIMEZONE=America/Sao_Paulo
-
-    db:
-        image: mysql:latest
-        container_name: lendfy-db
-        environment:
-            MYSQL_DATABASE: laravel
-            MYSQL_USER: laravel
-            MYSQL_PASSWORD: 123456
-            MYSQL_ROOT_PASSWORD:
-            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-        ports:
-            - "3306:3306"
-        networks:
-            - lendfy-net
-        volumes:
-            - db-data:/var/lib/mysql
+name: lendfy
 
 networks:
-    lendfy-net:
+    laravel-network:
         driver: bridge
 
 volumes:
-    db-data:
+    laravel-db:
+        driver: local
+    laravel-app:
+        driver: local
+
+services:
+    laravel:
+        build:
+            context: .
+            dockerfile: Dockerfile.laravel
+            args:
+                - APP_NAME=Lendfy
+                - APP_ENV=local
+                - APP_KEY=
+                - APP_DEBUG=true
+                - APP_URL=localhost
+                - LOG_CHANNEL=stack
+                - LOG_DEPRECATIONS_CHANNEL=null
+                - LOG_LEVEL=debug
+                - DB_CONNECTION=mysql
+                - DB_HOST=db
+                - DB_PORT=3306
+                - DB_DATABASE=laravel
+                - DB_USERNAME=laravel
+                - DB_PASSWORD=123456
+                - BROADCAST_DRIVER=log
+                - CACHE_DRIVER=file
+                - FILESYSTEM_DISK=minio
+                - QUEUE_CONNECTION=sync
+                - SESSION_DRIVER=file
+                - SESSION_LIFETIME=120
+                - MEMCACHED_HOST=127.0.0.1
+                - REDIS_HOST=127.0.0.1
+                - REDIS_PASSWORD=null
+                - REDIS_PORT=6379
+                - MAIL_MAILER=smtp
+                - MAIL_HOST=mailpit
+                - MAIL_PORT=1025
+                - MAIL_USERNAME=null
+                - MAIL_PASSWORD=null
+                - MAIL_ENCRYPTION=null
+                - MAIL_FROM_ADDRESS="hello@example.com"
+                - MAIL_FROM_NAME="${APP_NAME}"
+                - AWS_DEFAULT_REGION=us-east-1
+                - AWS_USE_PATH_STYLE_ENDPOINT=false
+                - PUSHER_PORT=443
+                - PUSHER_SCHEME=https
+                - PUSHER_APP_CLUSTER=mt1
+                - VITE_APP_NAME="${APP_NAME}"
+                - VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+                - VITE_PUSHER_HOST="${PUSHER_HOST}"
+                - VITE_PUSHER_PORT="${PUSHER_PORT}"
+                - VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+                - VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+        networks:
+            - laravel-network
+        volumes:
+            - laravel-app:/var/www/html
+        restart: always
+
+    nginx:
+        build:
+            context: .
+            dockerfile: Dockerfile.nginx
+        volumes:
+            - laravel-app:/var/www/html
+        ports:
+            - "16005:80"
+        networks:
+            - laravel-network
+
+    db:
+        image: mariadb
+        expose:
+            - 3306
+        networks:
+            - laravel-network
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_USER: root
+            MYSQL_PASSWORD: pwd
+            MYSQL_ROOT_PASSWORD:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        volumes:
+            - laravel-db:/var/lib/mysql
+        restart: always
+
+    phpmyadmin:
+        image: phpmyadmin
+        ports:
+            - "16006:80"
+        environment:
+            - PMA_HOST=db
+            - PMA_PORT=3306
+            - UPLOAD_LIMIT=50000000
+        networks:
+            - laravel-network
+        restart: always
