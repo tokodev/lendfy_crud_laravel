@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "3f4ed23f-4fa3-4148-95d7-f1878e8e4c41",
+		"name": "Lendfy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1536468",
+		"_collection_link": "https://tokodev.postman.co/workspace/10c1a572-ba4f-47af-a616-5d5c653e20d2/collection/1536468-3f4ed23f-4fa3-4148-95d7-f1878e8e4c41?action=share&source=collection_link&creator=1536468"
+	},
+	"item": [
+		{
+			"name": "Home",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:16005",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16005"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:16005/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16005",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:16005/api/users/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16005",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Nome do Usuário\",\r\n    \"email\": \"usuario@email.com\",\r\n    \"password\": \"senha123\",\r\n    \"cpf\": \"12345678901\",\r\n    \"birth_date\": \"1990-01-01\",\r\n    \"street\": \"Rua Principal\",\r\n    \"street_number\": \"123\",\r\n    \"cep\": \"12345-678\",\r\n    \"city\": \"Cidade\",\r\n    \"uf\": \"UF\",\r\n    \"active\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:16005/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16005",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Novo Nome do Usuário\",\r\n    \"email\": \"novo_email@dominio.com\",\r\n    \"password\": \"nova_senha456\",\r\n    \"cpf\": \"98765432109\",\r\n    \"birth_date\": \"1985-05-05\",\r\n    \"street\": \"Nova Rua\",\r\n    \"street_number\": \"456\",\r\n    \"cep\": \"54321-876\",\r\n    \"city\": \"Nova Cidade\",\r\n    \"uf\": \"NE\",\r\n    \"active\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:16005/api/users/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16005",
+					"path": [
+						"api",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:16005/api/users/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16005",
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
