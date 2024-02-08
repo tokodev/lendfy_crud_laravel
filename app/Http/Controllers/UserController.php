@@ -12,7 +12,25 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    /**
+     * The User repository instance.
+     *
+     * @var UserRepository
+     */
     protected $userRepository;
+
+    /**
+     * The states array.
+     *
+     * @var array
+     */
+    public $states;
+
+    /**
+     * UserController constructor.
+     *
+     * @param UserRepository $userRepository
+     */
 
     public function __construct(UserRepository $userRepository)
     {
@@ -48,6 +66,11 @@ class UserController extends Controller
         ];
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View
+     */
    public function index(): View
     {
         $users = $this->userRepository->latestPaginated(5);
@@ -58,6 +81,8 @@ class UserController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     *
+     * @return View
      */
     public function create(): View
     {
@@ -66,9 +91,16 @@ class UserController extends Controller
     }
 
 
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
     public function store(Request $request): RedirectResponse
-{
-    $request->validate([
+    {
+        // Validation rules
+        $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users|max:255',
         'password' => 'required|string|min:8',
@@ -81,36 +113,56 @@ class UserController extends Controller
         'uf' => 'required|string|max:2',
     ]);
 
-    $user = $this->userRepository->create([
-        'name' => $request->input('name'),
-        'email' => $request->input('email'),
-        'password' => Hash::make($request->input('password')),
-        'cpf' => $request->input('cpf'),
-        'birth_date' => $request->input('birth_date'),
-        'street' => $request->input('street'),
-        'street_number' => $request->input('street_number'),
-        'cep' => $request->input('cep'),
-        'city' => $request->input('city'),
-        'uf' => $request->input('uf'),
-        'active' => $request->filled('active') ? $request->input('active') : false,
-    ]);
+        // Create a new user
+        $user = $this->userRepository->create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'cpf' => $request->input('cpf'),
+            'birth_date' => $request->input('birth_date'),
+            'street' => $request->input('street'),
+            'street_number' => $request->input('street_number'),
+            'cep' => $request->input('cep'),
+            'city' => $request->input('city'),
+            'uf' => $request->input('uf'),
+            'active' => $request->filled('active') ? $request->input('active') : false,
+        ]);
 
+        // Redirect to the index page with success message
       return redirect()->route('users.index')
                         ->with('success','User created successfully.');
 }
 
-public function edit(User $user): View
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param User $user
+     * @return View
+     */
+    public function edit(User $user): View
     {
        $states = $this->states;
        return view('users.edit',compact('user', 'states'));
     }
 
-
+    /**
+     * Display the specified resource.
+     *
+     * @param User $user
+     * @return View
+     */
     public function show(User $user): View
     {
         return view('users.show',compact('user'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
+     */
     public function update(Request $request, User $user)
 {
     $request->validate([
@@ -144,7 +196,12 @@ public function edit(User $user): View
                         ->with('success','User updated successfully');
     }
 
-
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param User $user
+     * @return RedirectResponse
+     */
     public function destroy(User $user)
     {
         $this->userRepository->delete($user);
