@@ -1,0 +1,16 @@
+# git
+.git/
+.gitignore
+.gitattributes
+
+# docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+Dockerfile.laravel
+Dockerfile.nginx
+
+# others
+.env
+*.md
+Lendfy.postman_collection.json
