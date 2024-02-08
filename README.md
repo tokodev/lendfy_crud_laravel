@@ -111,8 +111,6 @@ support the blades:
     php artisan migrate
     ```
 
-    Run migrations and seeders:
-
 6.  **Access the Application:**
 
     6.1 . **Postman:** - Utilize the provided Postman collection for API requests:
@@ -140,6 +138,8 @@ support the blades:
 
 Create fake users to test pagination with Laravel Seeds
 
+Run migrations and seeders:
+
 ```bash
     php artisan db:seed --class=UsersTableSeeder
 ```
@@ -165,3 +165,14 @@ php artisan test --filter UserTest
 -   Add internalization
 
 Among other things, I believe that the evaluation here plus the knowledge of Laravel in its CRUD
+
+Caso de erro nos test execute os seguintes commandos e tente novamente
+
+```bash
+php artisan key:generate
+php artisan config:cache
+php artisan cache:clear
+
+php artisan test
+php artisan test --filter UserTest
+```
