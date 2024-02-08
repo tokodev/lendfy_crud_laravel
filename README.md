@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a Laravel 10 CRUD application built with PHP 8.2 and MariaDB, utilizing Docker for easy setup and deployment.
+This is a Laravel 10 CRUD User Application built with PHP 8.2 and MariaDB, utilizing Docker for easy setup and deployment.
 
 ## Technologies
 
@@ -144,9 +144,22 @@ Create fake users to test pagination with Laravel Seeds
     php artisan db:seed --class=UsersTableSeeder
 ```
 
-8. **Final considerations**
+8. **Test User**
 
--   Now you could create unit tests
+This test aims to ensure the correct functioning of user-related functionalities in our application.
+
+```bash
+php artisan test
+```
+
+OR just test the user
+
+```bash
+php artisan test --filter UserTest
+```
+
+9. **Final considerations**
+
 -   Configure the dark mode theme
 -   Adjust responsive
 -   Add internalization
